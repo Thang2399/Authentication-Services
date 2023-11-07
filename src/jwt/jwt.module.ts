@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { ApiConfigServices } from '../config/api/api-config.service';
-import { ApiConfigModule } from '../config/api/api-config.module';
-// import { JwtStrategy } from './jwt.strategy';
+import { ApiConfigModule } from '@/src/config/api/api-config.module';
+import { ApiConfigServices } from '@/src/config/api/api-config.service';
 
 @Module({
   imports: [

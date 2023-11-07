@@ -5,31 +5,30 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { HTTP_RESPONSE_MESSAGE } from '../../constants';
 import { JwtService } from '@nestjs/jwt';
-
-// import { MailService } from '../config/mail/mail.service';
+import { User, UserDocument } from '@/src/schema/user.schema';
+import { ApiConfigServices } from '@/src/config/api/api-config.service';
+import { SignupWithEmailDto } from '@/src/dto/auth/signup.dto';
 import {
   checkTokenExpireOrNot,
   comparePassword,
   getFutureTimestamp,
   hashPassword,
-} from '../../utils';
-import { User, UserDocument } from '../../schema/user.schema';
-import { ApiConfigServices } from '../../config/api/api-config.service';
-import { SignupWithEmailDto } from '../../dto/auth/signup.dto';
-import { IUserInterface } from '../../interface/user.interface';
-import { LoginWithEmailPasswordDto } from '../../dto/auth/login.dto';
-import { ForgotPasswordDto } from '../../dto/auth/forgot-password.dto';
-import { ResetPasswordDto } from '../../dto/auth/reset-password.dto';
+} from '@/src/utils';
+import { IUserInterface } from '@/src/interface/user.interface';
+import { LoginWithEmailPasswordDto } from '@/src/dto/auth/login.dto';
+import { HTTP_RESPONSE_MESSAGE } from '@/src/constants';
+import { ForgotPasswordDto } from '@/src/dto/auth/forgot-password.dto';
+import { ResetPasswordDto } from '@/src/dto/auth/reset-password.dto';
+import { MailService } from '@/src/config/mail/mail.service';
 
 @Injectable()
 export class AuthServices {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
-    private apiConfigServices: ApiConfigServices, // private mailServices: MailService,
+    private apiConfigServices: ApiConfigServices,
+    private mailServices: MailService,
   ) {}
   private revokedTokens: Set<string> = new Set();
   public revokeToken(token: string): void {
@@ -81,15 +80,11 @@ export class AuthServices {
         expiresIn: '1h',
       });
       const expiredTime = getFutureTimestamp();
-      // await this.mailServices.sendEmailResetPasswordLink(
-      //   user,
-      //   resetPasswordToken,
-      // );
+      await this.mailServices.sendEmailResetPasswordLink(
+        user,
+        resetPasswordToken,
+      );
     }
-  }
-
-  getHealthCheck(): string {
-    return 'Hello World! Authen services is still alive';
   }
 
   async loginWithEmailPassword(dto: LoginWithEmailPasswordDto) {

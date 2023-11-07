@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ApiConfigServices } from '../../config/api/api-config.service';
+import { MailModule } from '@/src/config/mail/mail.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ApiConfigServices } from '../../config/api/api-config.service';
       secret: process.env.SECRET_KEY,
       signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
     }),
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [AuthServices, ApiConfigServices],

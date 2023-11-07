@@ -1,24 +1,15 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthServices } from './auth.service';
-import { LoginWithEmailPasswordDto } from '../../dto/auth/login.dto';
-import { SignupWithEmailDto } from '../..//dto/auth/signup.dto';
-import { ForgotPasswordDto } from '../../dto/auth/forgot-password.dto';
-import { ResetPasswordDto } from '../../dto/auth/reset-password.dto';
+import { LoginWithEmailPasswordDto } from '@/src/dto/auth/login.dto';
+import { SignupWithEmailDto } from '@/src/dto/auth/signup.dto';
+import { ForgotPasswordDto } from '@/src/dto/auth/forgot-password.dto';
+import { ResetPasswordDto } from '@/src/dto/auth/reset-password.dto';
 
 @ApiTags('Authentication')
 @Controller('/')
 export class AuthController {
   constructor(private readonly authServices: AuthServices) {}
-
-  @ApiOperation({
-    description: 'Check health',
-  })
-  @Get('')
-  async getHealthCheck() {
-    return this.authServices.getHealthCheck();
-  }
-
   @ApiOperation({
     description: 'Login with email and password',
   })
