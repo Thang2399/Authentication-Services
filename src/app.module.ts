@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
-import { HealthModule } from './health/health.module';
-import { AuthModule } from './auth/auth.module';
+import { HealthModule } from './module/health/health.module';
+import { AuthModule } from './module/auth/auth.module';
 import { ApiConfigModule } from './config/api/api-config.module';
 import { ApiConfigServices } from './config/api/api-config.service';
+import { MongoModule } from './module/mongo/mongo.module';
+
+const modules = [HealthModule, AuthModule, ApiConfigModule, MongoModule];
 
 @Module({
-  imports: [HealthModule, AuthModule, ApiConfigModule],
+  imports: modules,
   controllers: [],
   providers: [ApiConfigServices],
 })
