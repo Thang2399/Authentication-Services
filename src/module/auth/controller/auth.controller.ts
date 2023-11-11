@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthServices } from './auth.service';
+import { AuthServices } from '../service/auth.service';
 import { LoginWithEmailPasswordDto } from '@/src/dto/auth/login.dto';
 import { SignupWithEmailDto } from '@/src/dto/auth/signup.dto';
 import { ForgotPasswordDto } from '@/src/dto/auth/forgot-password.dto';

@@ -12,15 +12,17 @@ import { SignupWithEmailDto } from '@/src/dto/auth/signup.dto';
 import {
   checkTokenExpireOrNot,
   comparePassword,
+  generateRandomPassword,
   getFutureTimestamp,
   hashPassword,
 } from '@/src/utils';
-import { IUserInterface } from '@/src/interface/user.interface';
+import { IGoogleUser, IUserInterface } from '@/src/interface/user.interface';
 import { LoginWithEmailPasswordDto } from '@/src/dto/auth/login.dto';
 import { HTTP_RESPONSE_MESSAGE } from '@/src/constants';
 import { ForgotPasswordDto } from '@/src/dto/auth/forgot-password.dto';
 import { ResetPasswordDto } from '@/src/dto/auth/reset-password.dto';
 import { MailService } from '@/src/config/mail/mail.service';
+import { Gender_Enum } from '@/src/enum/user.enum';
 
 @Injectable()
 export class AuthServices {
@@ -53,6 +55,35 @@ export class AuthServices {
       .exec();
 
     return await this.generateAccessRefreshToken(specificUser);
+  }
+
+  async createUserSignUpWithSocialIfNotExit(user: IGoogleUser) {
+    console.log('specificUser', user);
+    const email = user.email;
+    const userName = `${user.firstName} ${user.lastName}`;
+
+    const specificUserFromDatabase = await this.userModel
+      .findOne({ email })
+      .exec();
+
+    if (!specificUserFromDatabase) {
+      const password = await generateRandomPassword();
+
+      const newUserObj = {
+        email,
+        userName,
+        password,
+        gender: Gender_Enum.MALE,
+        phoneNumber: '000000000',
+      };
+
+      const newUser = new this.userModel(newUserObj);
+      await newUser.save();
+
+      return newUser;
+    } else {
+      return specificUserFromDatabase;
+    }
   }
 
   async generateAccessRefreshToken(userPayload: IUserInterface) {
@@ -149,5 +180,14 @@ export class AuthServices {
         .exec();
       this.revokeToken(token);
     }
+  }
+
+  async loginWithGoogle(req) {
+    const { user } = req;
+    if (!user) {
+      throw new NotFoundException(HTTP_RESPONSE_MESSAGE.LOGIN.USER_NOT_EXIST);
+    }
+    console.log('user', user);
+    return await this.createUserSignUpWithSocialIfNotExit(user);
   }
 }
