@@ -4,7 +4,6 @@ import { AuthModule } from './module/auth/auth.module';
 import { ApiConfigModule } from './config/api/api-config.module';
 import { ApiConfigServices } from './config/api/api-config.service';
 import { MongoModule } from './module/mongo/mongo.module';
-import { MailModule } from '@/src/config/mail/mail.module';
 
 const modules = [HealthModule, AuthModule, ApiConfigModule, MongoModule];
 

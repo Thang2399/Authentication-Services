@@ -1,6 +1,8 @@
 export const Config_Constants_Enum = {
+  APP_DOMAIN: 'APP_DOMAIN',
   PORT: 'PORT',
   VERSION: '1.0',
+
   MONGOOSE_CONNECTION: 'MONGOOSE_CONNECTION',
   CLIENT_DOMAIN: 'CLIENT_DOMAIN',
 

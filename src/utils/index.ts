@@ -14,6 +14,12 @@ export const comparePassword = async (
   return await bcrypt.compare(password, originalPassword);
 };
 
+export const generateRandomPassword = async () => {
+  const randomString = Math.random().toString(36).slice(-8);
+  const hashedRandomString = await hashPassword(randomString);
+  return hashedRandomString;
+};
+
 export const getFutureTimestamp = (
   numberOfHoursFromNow = 1,
   unit: dayjs.ManipulateType = 'hour',
