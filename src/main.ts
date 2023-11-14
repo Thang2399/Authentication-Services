@@ -14,6 +14,14 @@ async function bootstrap() {
     .setTitle('The Fake Shop authentication services')
     .setDescription('The Fake Shop authentication services API')
     .setVersion(version)
+    .addBearerAuth()
+    .addApiKey({
+      type: 'apiKey',
+      name: 'refreshToken',
+      in: 'header',
+      description: 'Refresh Token',
+    }) // Add this line for refreshToken
+
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

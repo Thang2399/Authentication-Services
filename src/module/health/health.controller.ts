@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiTags('Health check')
 @Controller('health')
@@ -8,7 +9,9 @@ export class HealthController {
     description: 'Check health of sever',
   })
   @Get()
-  async getHealthCheck() {
-    return 'Hello world! Service is still alive!';
+  async getHealthCheck(@Res() res: Response) {
+    return res
+      .status(200)
+      .json({ message: 'Hello world! Service is still alive!' });
   }
 }

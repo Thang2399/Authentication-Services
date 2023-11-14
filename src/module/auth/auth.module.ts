@@ -9,11 +9,13 @@ import { ApiConfigServices } from '../../config/api/api-config.service';
 import { MailModule } from '@/src/config/mail/mail.module';
 import { GoogleStrategy } from '@/src/strategy/google.strategy';
 import { Oauth2GoogleController } from '@/src/module/auth/controller/oauth2-google.controller';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     ApiConfigModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,
