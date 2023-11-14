@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { Gender_Enum } from '../../enum/user.enum';
+import { Gender_Enum } from '@/src/shared/enum/user.enum';
 import dayjs from 'dayjs';
 
 export class SignupWithEmailDto {

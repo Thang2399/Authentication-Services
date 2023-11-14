@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthServices } from '@/src/module/auth/service/auth.service';
-import { IOAuthStateComing } from '@/src/interface/state.interface';
+import { IOAuthStateComing } from '@/src/shared/interface/state.interface';
 import { Response } from 'express';
 
 @ApiTags('Google authentication')

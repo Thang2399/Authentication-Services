@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -16,13 +17,17 @@ import {
   getFutureTimestamp,
   hashPassword,
 } from '@/src/utils';
-import { IGoogleUser, IUserInterface } from '@/src/interface/user.interface';
+import {
+  IGoogleUser,
+  IUserInterface,
+} from '@/src/shared/interface/user.interface';
 import { LoginWithEmailPasswordDto } from '@/src/dto/auth/login.dto';
 import { HTTP_RESPONSE_MESSAGE } from '@/src/constants';
 import { ForgotPasswordDto } from '@/src/dto/auth/forgot-password.dto';
 import { ResetPasswordDto } from '@/src/dto/auth/reset-password.dto';
 import { MailService } from '@/src/config/mail/mail.service';
-import { Gender_Enum } from '@/src/enum/user.enum';
+import { Gender_Enum } from '@/src/shared/enum/user.enum';
+import { VerifyTokenDto } from '@/src/dto/token/verify-token.dto';
 
 @Injectable()
 export class AuthServices {
@@ -189,5 +194,39 @@ export class AuthServices {
     }
     console.log('user', user);
     return await this.createUserSignUpWithSocialIfNotExit(user);
+  }
+
+  async getCurrentUserInfo(userId: string) {
+    const specificUser = await this.userModel.findById(userId).exec();
+
+    delete specificUser.password;
+
+    return {
+      _id: specificUser._id,
+      userName: specificUser.userName,
+      gender: specificUser.gender,
+      role: specificUser.role,
+      phoneNumber: specificUser.phoneNumber,
+      dateOfBirth: specificUser.dateOfBirth,
+    };
+  }
+
+  async generateNewAccessTokenFromRefreshToken(dto: VerifyTokenDto) {
+    const { token } = dto;
+
+    try {
+      const verifyToken = await this.jwtService.verifyAsync(token, {
+        secret: this.apiConfigServices.getSecretKey(),
+      });
+
+      const id = verifyToken?.id;
+      if (id) {
+        const specificUser = await this.userModel.findById(id).exec();
+        this.revokeToken(token);
+        return this.generateAccessRefreshToken(specificUser);
+      }
+    } catch {
+      throw new UnauthorizedException();
+    }
   }
 }
