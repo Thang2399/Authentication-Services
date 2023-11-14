@@ -204,6 +204,7 @@ export class AuthServices {
     return {
       _id: specificUser._id,
       userName: specificUser.userName,
+      email: specificUser.email,
       gender: specificUser.gender,
       role: specificUser.role,
       phoneNumber: specificUser.phoneNumber,
