@@ -11,7 +11,7 @@ export class AbstractDto {
   updatedAt?: string = new Date().toISOString();
 }
 
-export class AbstractSoftDeleteDto {
+export class AbstractSoftDeleteDto extends AbstractDto {
   @ApiProperty()
   deletedAt?: string;
 }
