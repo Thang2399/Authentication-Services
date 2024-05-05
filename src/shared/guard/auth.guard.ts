@@ -33,7 +33,6 @@ export class AuthenticationGuard implements CanActivate {
       const verifyToken = await this.jwtService.verifyAsync(accessToken, {
         secret: this.apiConfigServices.getSecretKey(),
       });
-      console.log('verifyToken', verifyToken);
 
       const id = verifyToken?.id;
       if (id) {

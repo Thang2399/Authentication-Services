@@ -10,8 +10,8 @@ export class HealthController {
   })
   @Get()
   async getHealthCheck(@Res() res: Response) {
-    return res
-      .status(200)
-      .json({ message: 'Hello world! Service is still alive!' });
+    return res.status(200).json({
+      message: 'Hello world! The Authentication Service is still alive!',
+    });
   }
 }
