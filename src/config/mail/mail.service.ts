@@ -6,8 +6,12 @@ import { IUserInterface } from '@/src/shared/interface/user.interface';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendEmailResetPasswordLink(user: IUserInterface, token = '') {
-    const url = `example.com/auth/confirm?token=${token}`;
+  async sendEmailResetPasswordLink(
+    user: IUserInterface,
+    token = '',
+    callbackUrl = '',
+  ) {
+    const url = `${callbackUrl}?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,

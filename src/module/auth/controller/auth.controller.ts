@@ -58,6 +58,19 @@ export class AuthController {
   }
 
   @ApiOperation({
+    description: 'Reset password check token is in used or not',
+  })
+  @ApiBody({ type: VerifyTokenDto })
+  @Post('/check-token-in-used')
+  async checkResetPasswordTokenInUsed(@Body() dto: VerifyTokenDto, @Res() res: Response) {
+    const { token } = dto;
+    if (!token) {
+      throw new NotFoundException();
+    }
+    return this.authServices.checkResetPasswordTokenInUse(token, res);
+  }
+
+  @ApiOperation({
     description:
       'Reset new password with reset link send from forgot password email',
   })
