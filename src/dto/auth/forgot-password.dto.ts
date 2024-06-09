@@ -11,4 +11,9 @@ export class ForgotPasswordDto {
   @IsEmail()
   @Expose()
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Expose()
+  callbackUrl: string;
 }

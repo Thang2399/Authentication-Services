@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  BadRequestException, HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -28,6 +28,7 @@ import { ResetPasswordDto } from '@/src/dto/auth/reset-password.dto';
 import { MailService } from '@/src/config/mail/mail.service';
 import { Gender_Enum } from '@/src/shared/enum/user.enum';
 import { VerifyTokenDto } from '@/src/dto/token/verify-token.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthServices {
@@ -108,7 +109,7 @@ export class AuthServices {
     };
   }
 
-  async generateResetPasswordToken(user: IUserInterface) {
+  async generateResetPasswordToken(user: IUserInterface, callbackUrl: string) {
     const { id, userName } = user;
     if (id) {
       const payload = { id, userName };
@@ -119,6 +120,7 @@ export class AuthServices {
       await this.mailServices.sendEmailResetPasswordLink(
         user,
         resetPasswordToken,
+        callbackUrl,
       );
     }
   }
@@ -154,7 +156,7 @@ export class AuthServices {
   }
 
   async forgotPasswordSendEmail(dto: ForgotPasswordDto) {
-    const { email } = dto;
+    const { email, callbackUrl } = dto;
     const specificUser = await this.userModel.findOne({ email }).exec();
 
     if (!specificUser) {
@@ -162,7 +164,22 @@ export class AuthServices {
         message: HTTP_RESPONSE_MESSAGE.FORGET_RESET_PASSWORD.NOT_FOUND_EMAIL,
       });
     } else {
-      await this.generateResetPasswordToken(specificUser);
+      await this.generateResetPasswordToken(specificUser, callbackUrl);
+    }
+  }
+
+  async checkResetPasswordTokenInUse(token: string, res: Response) {
+    const isTokenInvalid = this.isTokenRevoked(token);
+
+    const decodedToken = this.jwtService.verify(token);
+    const id = decodedToken?.id;
+    const tokenExpiredTime = decodedToken?.exp || 0;
+    const isTokenNotExpired = checkTokenExpireOrNot(tokenExpiredTime);
+
+    if (!id || !isTokenNotExpired || isTokenInvalid) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ isInUsed: true });
+    } else {
+      return res.status(HttpStatus.OK).json({ isInUsed: false });
     }
   }
 
