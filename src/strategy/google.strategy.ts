@@ -3,6 +3,7 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 
 import { Injectable } from '@nestjs/common';
 import { ApiConfigServices } from '@/src/config/api/api-config.service';
+import { Request } from 'express';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -14,10 +15,20 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: apiConfigServices.getGoogleOAuthKeys().clientSecret,
       callbackURL: `${apiConfigServices.getAppDomain()}${apiConfigServices.getPort()}/google/redirect`,
       scope: ['email', 'profile'],
+      passReqToCallback: true,
+    });
+  }
+
+  async authenticate(req: Request, options: any) {
+    const stringify = JSON.stringify(req.query);
+    super.authenticate(req, {
+      ...options,
+      state: stringify,
     });
   }
 
   async validate(
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: any,

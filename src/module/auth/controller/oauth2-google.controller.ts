@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -10,7 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AuthServices } from '@/src/module/auth/service/auth.service';
 import { IOAuthStateComing } from '@/src/shared/interface/state.interface';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @ApiTags('Google authentication')
 @Controller('/google')
@@ -28,17 +29,21 @@ export class Oauth2GoogleController {
   @ApiOperation({
     description: 'login with google and redirect',
   })
+  @Redirect()
   @Get('/redirect')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const googleUser = await this.authServices.loginWithGoogle(req);
+    console.log('googleUser', googleUser);
 
     const generatedTokens = await this.authServices.generateAccessRefreshToken(
       googleUser,
     );
 
-    const { redirect_url } = <IOAuthStateComing>JSON.parse('redirect_url')
-      ? JSON.parse('redirect_url')
+    const payload = req.query.state as string;
+
+    const { redirect_url } = <IOAuthStateComing>JSON.parse(payload)
+      ? JSON.parse(payload)
       : '';
 
     if (!redirect_url) {
