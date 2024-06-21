@@ -29,6 +29,9 @@ export class User {
 
   @Prop({ default: new Date().toISOString() }) // Set the default value to the current ISO date and time
   createdAt?: string;
+
+  @Prop({ default: new Date().toISOString() }) // Set the default value to the current ISO date and time
+  updatedAt?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
