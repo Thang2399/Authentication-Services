@@ -5,8 +5,15 @@ import { ApiConfigModule } from './config/api/api-config.module';
 import { ApiConfigServices } from './config/api/api-config.service';
 import { MongoModule } from './module/mongo/mongo.module';
 import { AuthMiddleware } from '@/src/shared/middleware/header.middleware';
+import { UserModule } from '@/src/module/user/user.module';
 
-const modules = [HealthModule, AuthModule, ApiConfigModule, MongoModule];
+const modules = [
+  HealthModule,
+  AuthModule,
+  UserModule,
+  ApiConfigModule,
+  MongoModule,
+];
 
 @Module({
   imports: modules,

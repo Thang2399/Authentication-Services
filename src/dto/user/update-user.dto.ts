@@ -1,11 +1,10 @@
-import { AbstractSoftDeleteDto } from '@/src/dto/abstract/abstract.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Gender_Enum, User_Role_Enum } from '@/src/shared/enum/user.enum';
+import { Gender_Enum } from '@/src/shared/enum/user.enum';
 import dayjs from 'dayjs';
 
-export class UserDto extends AbstractSoftDeleteDto {
+export class UpdateUserDto {
   @ApiProperty()
   @Expose()
   @IsNotEmpty()
@@ -13,21 +12,13 @@ export class UserDto extends AbstractSoftDeleteDto {
 
   @ApiProperty()
   @Expose()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty()
-  @Expose()
   @IsString()
+  @IsNotEmpty()
   phoneNumber: string;
 
   @ApiProperty()
   @Expose()
   gender: string = Gender_Enum.MALE;
-
-  @ApiProperty()
-  @Expose()
-  role: string = User_Role_Enum.USER;
 
   @ApiProperty()
   @Expose()
