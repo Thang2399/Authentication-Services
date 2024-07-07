@@ -150,7 +150,9 @@ export class AuthServices {
     const specificUser = await this.userModel.findOne({ email }).exec();
 
     if (specificUser) {
-      throw new BadRequestException({ message: 'Duplicate email' });
+      throw new BadRequestException({
+        message: HTTP_RESPONSE_MESSAGE.SIGN_UP.DUPLICATE_EMAIL,
+      });
     } else {
       return await this.createUserIfNotExit(dto);
     }
@@ -187,16 +189,15 @@ export class AuthServices {
   async resetPasswordWithResetLink(dto: ResetPasswordDto) {
     const { token, newPassword } = dto;
     const isTokenInvalid = this.isTokenRevoked(token);
-    const decodedToken = this.jwtService.verify(token);
-    const id = decodedToken?.id;
-    const tokenExpiredTime = decodedToken?.exp || 0;
-    const isTokenNotExpired = checkTokenExpireOrNot(tokenExpiredTime);
+    console.log('isTokenInvalid', isTokenInvalid);
 
-    if (!id || !isTokenNotExpired || isTokenInvalid) {
+    if (!isTokenInvalid) {
       throw new BadRequestException({
         message: HTTP_RESPONSE_MESSAGE.FORGET_RESET_PASSWORD.TOKEN_IS_INVALID,
       });
     } else {
+      const decodedToken = this.jwtService.verify(token);
+      const id = decodedToken?.id;
       const newHashedPassword = await hashPassword(newPassword);
       await this.userModel
         .findByIdAndUpdate(id, { password: newHashedPassword }, { new: true })
