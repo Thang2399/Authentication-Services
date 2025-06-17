@@ -48,3 +48,8 @@ export const HTTP_RESPONSE_MESSAGE = {
 
   SERVER_ERROR: 'SERVER_ERROR',
 };
+
+export const USER_TYPES = {
+  ECOMMERCE: 'e-commerce',
+  HABIT_TRACKER: 'habit-tracker',
+}

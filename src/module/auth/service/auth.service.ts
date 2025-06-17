@@ -128,8 +128,11 @@ export class AuthServices {
 
   async loginWithEmailPassword(dto: LoginWithEmailPasswordDto) {
     const email = dto.email.toLowerCase();
+    const userType = dto.userType.toLowerCase();
     const password = dto.password;
-    const specificUser = await this.userModel.findOne({ email }).exec();
+    const specificUser = await this.userModel
+      .findOne({ email, userType })
+      .exec();
     const specificUserPassword = specificUser?.password || '';
     const comparePasswordResult = await comparePassword(
       specificUserPassword,
@@ -147,7 +150,10 @@ export class AuthServices {
 
   async signUpWithEmailPassword(dto: SignupWithEmailDto) {
     const email = dto.email.toLowerCase();
-    const specificUser = await this.userModel.findOne({ email }).exec();
+    const userType = dto.userType.toLowerCase();
+    const specificUser = await this.userModel
+      .findOne({ email, userType })
+      .exec();
 
     if (specificUser) {
       throw new BadRequestException({
@@ -167,6 +173,7 @@ export class AuthServices {
         message: HTTP_RESPONSE_MESSAGE.FORGET_RESET_PASSWORD.NOT_FOUND_EMAIL,
       });
     } else {
+      console.log('check run else');
       await this.generateResetPasswordToken(specificUser, callbackUrl);
     }
   }

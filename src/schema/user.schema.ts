@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Gender_Enum, User_Role_Enum } from '@/src/shared/enum/user.enum';
+import { USER_TYPES } from '@/src/constants';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -32,6 +33,9 @@ export class User {
 
   @Prop({ default: new Date().toISOString() }) // Set the default value to the current ISO date and time
   updatedAt?: string;
+
+  @Prop({ default: USER_TYPES.ECOMMERCE})
+  userType?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
