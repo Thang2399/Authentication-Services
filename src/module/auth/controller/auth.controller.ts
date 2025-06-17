@@ -62,7 +62,10 @@ export class AuthController {
   })
   @ApiBody({ type: VerifyTokenDto })
   @Post('/check-token-in-used')
-  async checkResetPasswordTokenInUsed(@Body() dto: VerifyTokenDto, @Res() res: Response) {
+  async checkResetPasswordTokenInUsed(
+    @Body() dto: VerifyTokenDto,
+    @Res() res: Response,
+  ) {
     const { token } = dto;
     if (!token) {
       throw new NotFoundException();
